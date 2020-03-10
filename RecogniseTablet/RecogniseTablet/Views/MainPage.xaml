@@ -4,8 +4,20 @@
              x:Class="RecogniseTablet.Views.MainPage"
              Title="{Binding Title}">
 
+    <ContentPage.Resources>
+        <StyleSheet Source="../Styles/LayoutStyle.css"/>
+    </ContentPage.Resources>
+
+
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Label Text="Welcome to Xamarin Forms and Prism!" />
+        <Button  StyleClass="primaryBtn"
+                    Margin="20,0,20,0" 
+                         HeightRequest="50" 
+                         Text="Login"  
+                         HorizontalOptions="FillAndExpand"
+                         BorderRadius="10"
+                        Command="{Binding DoAddFaceCommand}"/>
     </StackLayout>
 
 </ContentPage>

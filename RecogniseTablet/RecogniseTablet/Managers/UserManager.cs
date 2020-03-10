@@ -11,7 +11,7 @@ namespace RecogniseTablet.Managers
 {
     public class UserManager:IUserManager
     {
-        public async Task<bool> CheckUser(string username, string password)
+        public async Task<UserModel> CheckUser(string username, string password)
         {
             string url = $"User/GetUserByUsername/{username}";
             try
@@ -25,23 +25,23 @@ namespace RecogniseTablet.Managers
                         user = await response.Content.ReadAsAsync<UserModel>();
                         if (user.Password == password)                                                                           //Check if the password matches
                         {
-                            return true;
+                            return user;
                         }
                         else
                         {
-                            return false;                                                                                       //password does not match so returns a false
+                            return null;                                                                                      //password does not match so returns a false
                         }
                     }
                     else
                     {
-                        return false;                                                                                           //also returns a false if response from server is not successful
+                        return null;                                                                                           //also returns a false if response from server is not successful
 
                     }
                 }
             }
             catch(Exception err)
             {
-                return false;
+                return null;                                                                                                   //username cannot be found or server error
             }
 
         }

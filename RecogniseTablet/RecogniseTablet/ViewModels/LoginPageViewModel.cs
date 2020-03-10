@@ -22,10 +22,17 @@ namespace RecogniseTablet.ViewModels
         public async Task LoginCommandMethod()
         {
             var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);
-            if (result)
+
+            if(result != null)
             {
-                await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(MainPage)}");
+                if (result.ID > 0)
+                {
+                    var navigationParams = new NavigationParameters();
+                    navigationParams.Add("user",result);
+                    await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(MainPage)}",navigationParams);
+                }
             }
+
         }
 
         public string userName
