@@ -1,0 +1,20 @@
+﻿.header{
+   color:white;
+   font-size:large;
+
+}
+
+.inputbox{
+    color:white;
+    border:thick;
+}
+
+.primaryBtn {
+    background-color: #45d7c2;
+    color:#fff;
+}
+
+.secondaryBtn {
+    background-color: #fe5888;
+    color: #fff;
+}

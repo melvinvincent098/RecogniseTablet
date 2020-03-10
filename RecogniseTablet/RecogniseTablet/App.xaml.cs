@@ -1,5 +1,8 @@
 ﻿using Prism;
 using Prism.Ioc;
+using RecogniseTablet.Helper;
+using RecogniseTablet.Interfaces;
+using RecogniseTablet.Managers;
 using RecogniseTablet.ViewModels;
 using RecogniseTablet.Views;
 using Xamarin.Forms;
@@ -22,14 +25,22 @@ namespace RecogniseTablet
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            APIHelper.InitializeClient();
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await NavigationService.NavigateAsync("RootNavPage/LoginPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            //View to ViewModel Binding
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
+            containerRegistry.RegisterForNavigation<RootNavPage, RootNavPageViewModel>();
+
+            //Manager Interface to Manager Binding
+            containerRegistry.RegisterSingleton<IApplicationManager, ApplicationManager>();
+            containerRegistry.RegisterSingleton<IUserManager, UserManager>();
         }
     }
 }
