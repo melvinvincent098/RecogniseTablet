@@ -9,17 +9,18 @@ namespace RecogniseTablet.Managers
     {
         public IUserManager UserManager => this.userManager;
 
-
+        public IFaceManager FaceManager => this.faceManager;
 
 
 
         private readonly IUserManager userManager;
+        private readonly IFaceManager faceManager;
 
 
-
-        public ApplicationManager(IUserManager userManager)
+        public ApplicationManager(IUserManager userManager, IFaceManager faceManager)
         {
             this.userManager = userManager;
+            this.faceManager = faceManager;
         }
     }
 }

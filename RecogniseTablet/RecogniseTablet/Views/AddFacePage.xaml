@@ -7,9 +7,11 @@
              x:Class="RecogniseTablet.Views.AddFacePage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Button Text="Take a pic"
+                    Command="{Binding TakePhotoCommand}"/>
+
+            <Image x:Name="TakenImage"
+                   Source="{Binding ImageLocation}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

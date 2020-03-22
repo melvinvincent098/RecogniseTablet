@@ -7,5 +7,6 @@ namespace RecogniseTablet.Interfaces
     public interface IApplicationManager
     {
         IUserManager UserManager { get; }
+        IFaceManager FaceManager { get; }
     }
 }

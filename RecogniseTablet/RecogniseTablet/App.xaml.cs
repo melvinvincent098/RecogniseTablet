@@ -42,6 +42,7 @@ namespace RecogniseTablet
             //Manager Interface to Manager Binding
             containerRegistry.RegisterSingleton<IApplicationManager, ApplicationManager>();
             containerRegistry.RegisterSingleton<IUserManager, UserManager>();
+            containerRegistry.RegisterSingleton<IFaceManager, FaceManager>();
         }
     }
 }
