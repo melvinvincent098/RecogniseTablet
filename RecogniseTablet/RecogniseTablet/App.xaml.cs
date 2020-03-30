@@ -27,7 +27,7 @@ namespace RecogniseTablet
             InitializeComponent();
             APIHelper.InitializeClient();
 
-            await NavigationService.NavigateAsync("RootNavPage/AddFacePage");
+            await NavigationService.NavigateAsync("RootNavPage/LoginPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

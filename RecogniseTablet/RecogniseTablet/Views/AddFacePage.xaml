@@ -6,12 +6,30 @@
              mc:Ignorable="d"
              x:Class="RecogniseTablet.Views.AddFacePage">
     <ContentPage.Content>
-        <StackLayout>
-            <Button Text="Take a pic"
-                    Command="{Binding TakePhotoCommand}"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <Image x:Name="TakenImage"
-                   Source="{Binding ImageLocation}"/>
-        </StackLayout>
+
+            <StackLayout Grid.Row="0">
+                <Button Text="Register a face"
+                    Command="{Binding TakePhotoRegisterCommand}"/>
+
+                <Button Text="Detect Face"
+                        Command="{Binding TakePhotoIdentifyCommand}"/>
+
+            </StackLayout>
+
+
+            <Image Grid.Row="1" x:Name="TakenImage"
+                    Source="{Binding ImageLocation}"/>
+            <Label Grid.Row="1" Text="{Binding FoundUser}" FontSize="Medium"/>
+                
+
+
+        </Grid>
+
     </ContentPage.Content>
 </ContentPage>

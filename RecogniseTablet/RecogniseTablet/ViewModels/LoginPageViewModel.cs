@@ -35,6 +35,7 @@ namespace RecogniseTablet.ViewModels
 
         }
 
+
         public string userName
         {
             get

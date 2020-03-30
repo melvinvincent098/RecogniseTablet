@@ -48,13 +48,6 @@
                          BorderRadius="10"
                         Command="{Binding DoLoginCommand}"/>
 
-                <Button  StyleClass="secondaryBtn"
-                         Margin="20,0,20,0" 
-                         HeightRequest="50" 
-                         Text="Register" 
-                         HorizontalOptions="FillAndExpand"
-                         BorderRadius="10"/>
-
                 <Label Text="Forgot password" 
                         HorizontalOptions="Center"
                        TextColor="Blue"

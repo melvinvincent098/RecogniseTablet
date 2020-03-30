@@ -7,6 +7,8 @@ namespace RecogniseTablet.Interfaces
 {
     public interface IFaceManager
     {
-        Task DetectFace(string filePath);
+        Task RegisterFace(string filePath, string PersonGroupID, string username, string name);
+
+        Task<bool> IdentifyFace(string filePath, string PersonGroupID);
     }
 }
