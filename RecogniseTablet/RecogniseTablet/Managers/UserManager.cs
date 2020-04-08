@@ -45,5 +45,53 @@ namespace RecogniseTablet.Managers
             }
 
         }
+
+        public async Task<int> CheckUserIDPersonGroupID(int UserID)
+        {
+            string url = $"User/UserIDPersonGroupID/{UserID}";
+            int personGroupID = 0;
+            try
+            {
+                HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url);
+                
+                    
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                       personGroupID = await response.Content.ReadAsAsync<int>();
+                        return personGroupID;
+                        
+                    }
+                    else
+                    {
+                        return personGroupID;                                                                                           //also returns a 0 if response from server is not successful
+
+                    }
+                
+            }
+            catch (Exception err)
+            {
+                return personGroupID;                                                                                                   //returns 0 as a personGroupID
+            }
+
+        }
+
+        public async Task InsertUserIDPersonGroupID(int UserID, int PersonGroupID)
+        {
+            
+
+            try
+            {
+                string url = $"User/UserIDPersonGroupID/{UserID}/{PersonGroupID}";
+
+                HttpResponseMessage response = await APIHelper.ApiClient.PostAsync(url, null);
+
+            }
+            catch (Exception err)
+            {
+                                                                                                      
+            }
+
+        }
     }
 }

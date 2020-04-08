@@ -30,6 +30,12 @@ namespace RecogniseTablet
             await NavigationService.NavigateAsync("RootNavPage/LoginPage");
         }
 
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+        }
+
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             //View to ViewModel Binding
@@ -38,11 +44,15 @@ namespace RecogniseTablet
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
             containerRegistry.RegisterForNavigation<RootNavPage, RootNavPageViewModel>();
             containerRegistry.RegisterForNavigation<AddFacePage, AddFacePageViewModel>();
+            containerRegistry.RegisterForNavigation<DetectPage, DetectPageViewModel>();
 
             //Manager Interface to Manager Binding
             containerRegistry.RegisterSingleton<IApplicationManager, ApplicationManager>();
             containerRegistry.RegisterSingleton<IUserManager, UserManager>();
             containerRegistry.RegisterSingleton<IFaceManager, FaceManager>();
+            containerRegistry.RegisterSingleton<INotificationManager, NotificationManager>();
+            containerRegistry.RegisterSingleton<ICameraManager, CameraManager>();
+
         }
     }
 }

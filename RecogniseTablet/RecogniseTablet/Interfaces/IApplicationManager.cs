@@ -8,5 +8,11 @@ namespace RecogniseTablet.Interfaces
     {
         IUserManager UserManager { get; }
         IFaceManager FaceManager { get; }
+
+        ICameraManager CameraManager { get; }
+        //ICameraService CameraService { get; }
+
+        INotificationManager NotificationManager { get; }
+
     }
 }

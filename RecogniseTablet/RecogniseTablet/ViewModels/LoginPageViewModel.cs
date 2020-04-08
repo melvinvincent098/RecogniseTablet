@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using RecogniseTablet.Interfaces;
 using RecogniseTablet.Views;
 using System;
@@ -13,25 +14,51 @@ namespace RecogniseTablet.ViewModels
     {
         public DelegateCommand<string> DoLoginCommand { get; set; }
         string _userName, _password;
-        public LoginPageViewModel(INavigationService navigationService, IApplicationManager applicationManager) : base(navigationService, applicationManager)
+        private readonly IPageDialogService _dialogService;
+        public LoginPageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
+            _dialogService = dialogService;
             // For Login
             this.DoLoginCommand = new DelegateCommand<string>(async login => await this.LoginCommandMethod());
         }
 
         public async Task LoginCommandMethod()
         {
-            var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);
-
-            if(result != null)
+            if(string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(Password))
+             {
+                await this._dialogService.DisplayAlertAsync("Empty Fields", "Please fill in all the boxes", "Ok");
+            }
+            else
             {
-                if (result.ID > 0)
+                var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);
+
+                if (result != null)
                 {
-                    var navigationParams = new NavigationParameters();
-                    navigationParams.Add("user",result);
-                    await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(MainPage)}",navigationParams);
+                    if (result.ID > 0)
+                    {
+                        var personGroupID = await this.ApplicationManager.UserManager.CheckUserIDPersonGroupID(result.ID);
+                        var navigationParams = new NavigationParameters();
+
+
+                        if (personGroupID > 0)
+                        {
+                            navigationParams.Add("personGroupID", personGroupID);
+                            await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(DetectPage)}", navigationParams);
+                        }
+                        else
+                        {
+                            navigationParams.Add("user", result);
+                            await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(MainPage)}", navigationParams);
+                        }
+
+                    }
+                }
+                else
+                {
+                    await this._dialogService.DisplayAlertAsync("Incorrect Details", "Username or Password is Incorrect", "Ok");
                 }
             }
+
 
         }
 
@@ -59,5 +86,7 @@ namespace RecogniseTablet.ViewModels
                 this.SetProperty(ref this._password, value);
             }
         }
+
+
     }
 }

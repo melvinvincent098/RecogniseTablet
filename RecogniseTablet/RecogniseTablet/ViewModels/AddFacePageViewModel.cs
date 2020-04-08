@@ -13,21 +13,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Linq;
+using Prism.AppModel;
+using Prism.Services;
+using RecogniseTablet.Views;
 
 namespace RecogniseTablet.ViewModels
 {
-   public class AddFacePageViewModel: ViewModelBase
+   public class AddFacePageViewModel: ViewModelBase, IPageLifecycleAware
     {
-        private ImageSource _imageLocation;
+        private readonly ICameraService _cameraService;
         private string _foundUser = string.Empty;
         public DelegateCommand<string> TakePhotoRegisterCommand { get; set; }
         public DelegateCommand<string> TakePhotoIdentifyCommand { get; set; }
+        private readonly IPageDialogService _dialogService;
 
         private string _personGroupID, _username, _name;
-        public AddFacePageViewModel(INavigationService navigationService, IApplicationManager applicationManager) : base(navigationService, applicationManager)
+        public AddFacePageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
-            this.TakePhotoRegisterCommand = new DelegateCommand<string>(async login => await this.TakePhotoRegisterCommandMethod());
-            this.TakePhotoIdentifyCommand = new DelegateCommand<string>(async login => await this.TakePhotoIdentifyCommandMethod());
+            _cameraService = cameraService;
+            _dialogService = dialogService;
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -37,107 +41,56 @@ namespace RecogniseTablet.ViewModels
             _name = parameters.GetValues<string>("name").First();
         }
 
-        public async Task TakePhotoRegisterCommandMethod()
+
+        public async void CameraManager_CameraScan(object sender, byte[] data)
         {
-            //await CrossMedia.Current.Initialize();
-
-            var permissionStatus = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-
-            var response = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Camera);
-            var permissionsStatus = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            try
             {
-                //*****NEED TO ALERT THE USER THAT CAMERA IS NOT AVAILABLE*****//
-                return;
-            }
 
-            var file = await CrossMedia.Current.TakePhotoAsync(
-                new StoreCameraMediaOptions
+                var result = await this.ApplicationManager.FaceManager.RegisterFace(data, _personGroupID, _username, _name);
+
+                if(result)                  //Face has been succesfully registered
                 {
-                    SaveToAlbum = true,
-                    //Directory = "Sample",
-                    //Name = "test.jpg"
-                });
+                    var navigationParams = new NavigationParameters();
+                    navigationParams.Add("personGroupID", _personGroupID);
+                    
 
-            if(file == null)
-            {
-                return;
+                    await this.ApplicationManager.UserManager.InsertUserIDPersonGroupID(Int32.Parse(_personGroupID), Int32.Parse(_personGroupID));
+                    await this._dialogService.DisplayAlertAsync("All Done", "our Face Has Been Successfully Registered", "Ok");            
+                    await this.NavigationService.NavigateAsync(nameof(DetectPage), navigationParams);       //go onto detecting a face.
+
+                }
+                else
+                {
+                    Console.WriteLine("ERROR: User has been not registered!");
+                    await this._dialogService.DisplayAlertAsync("Unsuccessful", "Please Try Again", "Ok");
+                }
             }
-
-            var albumpath = file.AlbumPath;
-
-            ImageLocation = ImageSource.FromStream(() =>
+            catch
             {
-                var stream = file.GetStream();
-                file.Dispose();
-                return stream;
-            });
-
-            await this.ApplicationManager.FaceManager.RegisterFace(albumpath,_personGroupID,_username,_name);
+                Console.WriteLine("ERROR: User has been not registered!");
+                await this._dialogService.DisplayAlertAsync("Unsuccessful", "Please Try Again", "Ok");
+            }
 
         }
 
 
-        public async Task TakePhotoIdentifyCommandMethod()
+        public void OnAppearing()
         {
-            //await CrossMedia.Current.Initialize();
-
-            var permissionStatus = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-
-            var response = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Camera);
-            var permissionsStatus = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            MessagingCenter.Subscribe<ICameraService, byte[]>(this, "FaceData", async (sender, arg) =>
             {
-                //*****NEED TO ALERT THE USER THAT CAMERA IS NOT AVAILABLE*****//
-                return;
-            }
-
-            var file = await CrossMedia.Current.TakePhotoAsync(
-                new StoreCameraMediaOptions
-                {
-                    SaveToAlbum = true,
-                    //Directory = "Sample",
-                    //Name = "test.jpg"
-                });
-
-            if (file == null)
-            {
-                return;
-            }
-
-            var albumpath = file.AlbumPath;
-
-            ImageLocation = ImageSource.FromStream(() =>
-            {
-                var stream = file.GetStream();
-                file.Dispose();
-                return stream;
+                this.ApplicationManager.CameraManager.OnCameraFaceDetect(arg);
             });
 
-            var result = await this.ApplicationManager.FaceManager.IdentifyFace(albumpath,_personGroupID);
 
-            if(result)
-            {
-                FoundUser = "Welcome " + _name + " To Your Car";
-            }
-            else
-            {
-                FoundUser = "GO AWAY YOU THIEF!!!";
-            }
-
+            this.ApplicationManager.CameraManager.CameraFaceDetect += CameraManager_CameraScan;
         }
 
-        public ImageSource ImageLocation
+        public void OnDisappearing()
         {
-            get
-            {
-                return _imageLocation;
-            }
+            MessagingCenter.Unsubscribe<ICameraService, byte[]>(this, "FaceData");
 
-            set
-            {
-                this.SetProperty(ref this._imageLocation, value);
-            }
+            this.ApplicationManager.CameraManager.CameraFaceDetect -= CameraManager_CameraScan;
         }
 
         public string FoundUser

@@ -25,9 +25,8 @@ namespace RecogniseTablet.Managers
 
 
 
-        public async Task RegisterFace(string filePath,string PersonGroupID, string username, string name)
+        public async Task<bool> RegisterFace(byte[] byteData, string PersonGroupID, string username, string name)
         {
-            byte[] byteData = GetImageAsByteArray(filePath);
 
             FaceFileModel fileobj = new FaceFileModel()
             {
@@ -40,20 +39,22 @@ namespace RecogniseTablet.Managers
 
              HttpResponseMessage response = await APIHelper.ApiClient.PostAsync(url, stringContent);
 
-    
+            if(response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
             
         }
 
-        /// <summary>
-        /// Identify Face
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public async Task<bool> IdentifyFace(string filePath, string PersonGroupID)
+
+        public async Task<bool> IdentifyFace(byte[] byteData, string PersonGroupID)
         {
             try
             {
-                byte[] byteData = GetImageAsByteArray(filePath);
 
                 FaceFileModel fileobj = new FaceFileModel()
                 {
@@ -85,10 +86,6 @@ namespace RecogniseTablet.Managers
             {
                 return false;
             }
-
-            
-
-
 
 
         }

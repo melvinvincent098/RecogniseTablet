@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using RecogniseTablet.Interfaces;
 using RecogniseTablet.Models;
 using RecogniseTablet.Views;
@@ -16,13 +17,15 @@ namespace RecogniseTablet.ViewModels
     {
         public DelegateCommand<string> DoAddFaceCommand { get; set; }
         IEnumerable<UserModel> LoginUser;
-        private string _userId, _username, _name;
+        private string _userId, _username, _name, _displayname;
+        private readonly IPageDialogService _dialogService;
 
 
-        public MainPageViewModel(INavigationService navigationService, IApplicationManager applicationManager) : base(navigationService, applicationManager)
+        public MainPageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
             Title = "Main Page";
             this.DoAddFaceCommand = new DelegateCommand<string>(async login => await this.DoAddFaceCommandMethod());
+            _dialogService = dialogService;
 
         }
 
@@ -32,7 +35,7 @@ namespace RecogniseTablet.ViewModels
             UserId = LoginUser.First().ID.ToString();
             Username = LoginUser.First().Username;
             Name = LoginUser.First().FirstName;
-
+            DisplayName = "Hello " + Name;
 
         }
 
@@ -40,7 +43,6 @@ namespace RecogniseTablet.ViewModels
         {
 
         }
-
 
         public async Task DoAddFaceCommandMethod()
         {
@@ -90,5 +92,19 @@ namespace RecogniseTablet.ViewModels
                 this.SetProperty(ref this._name, value);
             }
         }
+
+        public string DisplayName
+        {
+            get
+            {
+                return _displayname;
+            }
+
+            set
+            {
+                this.SetProperty(ref this._displayname, value);
+            }
+        }
+
     }
 }

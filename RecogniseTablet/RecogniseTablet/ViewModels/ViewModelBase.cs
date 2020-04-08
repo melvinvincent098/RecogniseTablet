@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using RecogniseTablet.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace RecogniseTablet.ViewModels
     {
         protected INavigationService NavigationService { get; private set; }
         protected IApplicationManager ApplicationManager { get; private set; }
+        private readonly IPageDialogService _dialogService;
 
         private string _title;
         public string Title
@@ -20,10 +22,11 @@ namespace RecogniseTablet.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        public ViewModelBase(INavigationService navigationService, IApplicationManager applicationManager)
+        public ViewModelBase(INavigationService navigationService, IApplicationManager applicationManager, IPageDialogService dialogService)
         {
             NavigationService = navigationService;
             this.ApplicationManager = applicationManager;
+            _dialogService = dialogService;
         }
 
         public virtual void Initialize(INavigationParameters parameters)

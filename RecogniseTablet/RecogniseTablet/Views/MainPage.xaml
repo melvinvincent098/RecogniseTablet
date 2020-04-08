@@ -8,15 +8,45 @@
         <StyleSheet Source="../Styles/LayoutStyle.css"/>
     </ContentPage.Resources>
 
+    <ContentPage.Content>
 
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Button  StyleClass="primaryBtn"
-                    Margin="20,0,20,0" 
+        <Grid>
+
+            <StackLayout Spacing="10" >
+            
+                <Label
+                       HeightRequest="110"  
+                       HorizontalOptions="FillAndExpand" 
+                       Text="{Binding DisplayName}"                         
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                        FontSize="Large"/>
+
+                <Label Text="It Looks Like You Haven't Registered Your Face." 
+                        HorizontalOptions="Center"
+                        />
+
+
+                <Label Text="Please Register Your Face Below" 
+                        HorizontalOptions="Center"
+                       TextColor="Blue"
+                       VerticalOptions="EndAndExpand"
+                        />
+
+                <Button  StyleClass="primaryBtn"
+                    Margin="20,0,20,20" 
                          HeightRequest="50" 
                          Text="Register Face"  
                          HorizontalOptions="FillAndExpand"
                          BorderRadius="10"
                         Command="{Binding DoAddFaceCommand}"/>
-    </StackLayout>
+
+            </StackLayout>
+
+        </Grid>
+    </ContentPage.Content>
+
 
 </ContentPage>
+
+
