@@ -4,7 +4,6 @@ using Android.Content.PM;
 using Android.Hardware;
 using Android.OS;
 using Plugin.Media;
-using Plugin.Permissions;
 using Prism;
 using Prism.Ioc;
 using RecogniseTablet.Droid.CameraService;
@@ -22,21 +21,22 @@ namespace RecogniseTablet.Droid
 
         }
 
-        protected async override void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle bundle)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
             base.OnCreate(bundle);
-            await CrossMedia.Current.Initialize();
+            //await CrossMedia.Current.Initialize();
 
+            Xamarin.Essentials.Platform.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App(new AndroidInitializer()));
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
         {
-
-            PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            // PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 

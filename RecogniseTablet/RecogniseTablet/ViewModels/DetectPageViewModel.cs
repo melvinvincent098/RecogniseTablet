@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace RecogniseTablet.ViewModels
@@ -15,8 +17,9 @@ namespace RecogniseTablet.ViewModels
     public class DetectPageViewModel: ViewModelBase, IPageLifecycleAware
     {
         private readonly ICameraService _cameraService;
-        private int _personGroupID;
+        private int _personGroupID, _userId;
         private readonly IPageDialogService _dialogService;
+        public static Timer aTimer;
         public DetectPageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
             _cameraService = cameraService;
@@ -26,6 +29,7 @@ namespace RecogniseTablet.ViewModels
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             PersonGroupID = parameters.GetValue<int>("personGroupID");
+            UserId = parameters.GetValue<int>("userId");
         }
 
 
@@ -37,6 +41,9 @@ namespace RecogniseTablet.ViewModels
             if (!result)
             {
                 await this.ApplicationManager.NotificationManager.SendNotification();               //Sends alert to other device
+                await this.ApplicationManager.LocationManager.GetLocation(UserId);
+                SetupLocationTimer();
+                aTimer.Elapsed += GetLocationRepeat;
             }
             else
             {
@@ -44,6 +51,19 @@ namespace RecogniseTablet.ViewModels
             }
 
             
+        }
+
+        public void SetupLocationTimer()
+        {
+            aTimer = new Timer();
+            aTimer.Interval = 60000;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
+        }
+
+        public void GetLocationRepeat(object sender, ElapsedEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () => await this.ApplicationManager.LocationManager.GetLocation(UserId));
         }
 
         public void OnAppearing()
@@ -64,6 +84,7 @@ namespace RecogniseTablet.ViewModels
             MessagingCenter.Unsubscribe<ICameraService, byte[]>(this, "FaceData");
 
             this.ApplicationManager.CameraManager.CameraFaceDetect -= CameraManager_CameraScan;
+            aTimer.Elapsed -= GetLocationRepeat;
         }
 
 
@@ -78,6 +99,19 @@ namespace RecogniseTablet.ViewModels
             set
             {
                 this.SetProperty(ref this._personGroupID, value);
+            }
+        }
+
+        public int UserId
+        {
+            get
+            {
+                return _userId;
+            }
+
+            set
+            {
+                this.SetProperty(ref this._userId, value);
             }
         }
     }

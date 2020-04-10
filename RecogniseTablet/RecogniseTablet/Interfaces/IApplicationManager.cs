@@ -14,5 +14,6 @@ namespace RecogniseTablet.Interfaces
 
         INotificationManager NotificationManager { get; }
 
+        ILocationManager LocationManager { get; }
     }
 }

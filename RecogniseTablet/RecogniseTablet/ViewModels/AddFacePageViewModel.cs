@@ -53,7 +53,7 @@ namespace RecogniseTablet.ViewModels
                 {
                     var navigationParams = new NavigationParameters();
                     navigationParams.Add("personGroupID", _personGroupID);
-                    
+                    navigationParams.Add("userId", _personGroupID);
 
                     await this.ApplicationManager.UserManager.InsertUserIDPersonGroupID(Int32.Parse(_personGroupID), Int32.Parse(_personGroupID));
                     await this._dialogService.DisplayAlertAsync("All Done", "our Face Has Been Successfully Registered", "Ok");            

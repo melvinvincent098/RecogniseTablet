@@ -43,6 +43,7 @@ namespace RecogniseTablet.ViewModels
                         if (personGroupID > 0)
                         {
                             navigationParams.Add("personGroupID", personGroupID);
+                            navigationParams.Add("userId", result.ID);
                             await this.NavigationService.NavigateAsync($"/{nameof(RootNavPage)}/{nameof(DetectPage)}", navigationParams);
                         }
                         else

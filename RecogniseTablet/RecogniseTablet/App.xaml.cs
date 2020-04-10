@@ -52,6 +52,7 @@ namespace RecogniseTablet
             containerRegistry.RegisterSingleton<IFaceManager, FaceManager>();
             containerRegistry.RegisterSingleton<INotificationManager, NotificationManager>();
             containerRegistry.RegisterSingleton<ICameraManager, CameraManager>();
+            containerRegistry.RegisterSingleton<ILocationManager, LocationManager>();
 
         }
     }
