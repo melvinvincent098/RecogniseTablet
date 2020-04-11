@@ -24,18 +24,20 @@ namespace RecogniseTablet.ViewModels
         {
             _cameraService = cameraService;
             _dialogService = dialogService;
+            ActivityIndicator activityIndicator = new ActivityIndicator();
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             PersonGroupID = parameters.GetValue<int>("personGroupID");
             UserId = parameters.GetValue<int>("userId");
+            IsProcessing = false;
         }
 
 
         public async void CameraManager_CameraScan(object sender, byte[] data)
         {
-
+            IsProcessing = true;
             var result = await this.ApplicationManager.FaceManager.IdentifyFace(data, PersonGroupID.ToString());
 
             if (!result)
@@ -44,10 +46,12 @@ namespace RecogniseTablet.ViewModels
                 await this.ApplicationManager.LocationManager.GetLocation(UserId);
                 SetupLocationTimer();
                 aTimer.Elapsed += GetLocationRepeat;
+                IsProcessing = false;
             }
             else
             {
-                await this._dialogService.DisplayAlertAsync("Hello", "Everything is ok, your are the regitsered driver!", "Ok");
+                IsProcessing = false;
+                await this._dialogService.DisplayAlertAsync("Hello", "Everything is ok, your are the registered driver!", "Ok");
             }
 
             

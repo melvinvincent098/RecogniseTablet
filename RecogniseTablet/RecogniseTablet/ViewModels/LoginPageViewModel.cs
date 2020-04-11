@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace RecogniseTablet.ViewModels
 {
@@ -18,18 +19,20 @@ namespace RecogniseTablet.ViewModels
         public LoginPageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
             _dialogService = dialogService;
+            ActivityIndicator activityIndicator = new ActivityIndicator();
             // For Login
             this.DoLoginCommand = new DelegateCommand<string>(async login => await this.LoginCommandMethod());
         }
 
         public async Task LoginCommandMethod()
-        {
+        {           
             if(string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(Password))
              {
                 await this._dialogService.DisplayAlertAsync("Empty Fields", "Please fill in all the boxes", "Ok");
             }
             else
             {
+                IsProcessing = true;
                 var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);
 
                 if (result != null)
@@ -56,6 +59,7 @@ namespace RecogniseTablet.ViewModels
                 }
                 else
                 {
+                    IsProcessing = false;
                     await this._dialogService.DisplayAlertAsync("Incorrect Details", "Username or Password is Incorrect", "Ok");
                 }
             }

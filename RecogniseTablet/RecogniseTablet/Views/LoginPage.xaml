@@ -54,7 +54,7 @@
                         />
 
             </StackLayout>
-
+            <ActivityIndicator  Scale="0.3" IsRunning="{Binding IsProcessing}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

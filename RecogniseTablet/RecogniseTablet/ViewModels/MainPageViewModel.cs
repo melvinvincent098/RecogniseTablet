@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace RecogniseTablet.ViewModels
 {
@@ -26,6 +27,7 @@ namespace RecogniseTablet.ViewModels
             Title = "Main Page";
             this.DoAddFaceCommand = new DelegateCommand<string>(async login => await this.DoAddFaceCommandMethod());
             _dialogService = dialogService;
+            ActivityIndicator activityIndicator = new ActivityIndicator();
 
         }
 
@@ -36,6 +38,7 @@ namespace RecogniseTablet.ViewModels
             Username = LoginUser.First().Username;
             Name = LoginUser.First().FirstName;
             DisplayName = "Hello " + Name;
+            IsProcessing = false;
 
         }
 

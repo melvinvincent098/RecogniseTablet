@@ -32,6 +32,7 @@ namespace RecogniseTablet.ViewModels
         {
             _cameraService = cameraService;
             _dialogService = dialogService;
+            ActivityIndicator activityIndicator = new ActivityIndicator();
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -46,7 +47,7 @@ namespace RecogniseTablet.ViewModels
         {
             try
             {
-
+                IsProcessing = true;
                 var result = await this.ApplicationManager.FaceManager.RegisterFace(data, _personGroupID, _username, _name);
 
                 if(result)                  //Face has been succesfully registered
@@ -56,18 +57,20 @@ namespace RecogniseTablet.ViewModels
                     navigationParams.Add("userId", _personGroupID);
 
                     await this.ApplicationManager.UserManager.InsertUserIDPersonGroupID(Int32.Parse(_personGroupID), Int32.Parse(_personGroupID));
-                    await this._dialogService.DisplayAlertAsync("All Done", "our Face Has Been Successfully Registered", "Ok");            
+                    await this._dialogService.DisplayAlertAsync("All Done", "Your Face Has Been Successfully Registered", "Ok");            
                     await this.NavigationService.NavigateAsync(nameof(DetectPage), navigationParams);       //go onto detecting a face.
 
                 }
                 else
                 {
+                    IsProcessing = false;
                     Console.WriteLine("ERROR: User has been not registered!");
                     await this._dialogService.DisplayAlertAsync("Unsuccessful", "Please Try Again", "Ok");
                 }
             }
             catch
             {
+                IsProcessing = false;
                 Console.WriteLine("ERROR: User has been not registered!");
                 await this._dialogService.DisplayAlertAsync("Unsuccessful", "Please Try Again", "Ok");
             }

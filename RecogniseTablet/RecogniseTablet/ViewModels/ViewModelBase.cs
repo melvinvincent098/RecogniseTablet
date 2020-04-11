@@ -14,6 +14,7 @@ namespace RecogniseTablet.ViewModels
         protected INavigationService NavigationService { get; private set; }
         protected IApplicationManager ApplicationManager { get; private set; }
         private readonly IPageDialogService _dialogService;
+        private bool isProcessing = false;
 
         private string _title;
         public string Title
@@ -27,6 +28,18 @@ namespace RecogniseTablet.ViewModels
             NavigationService = navigationService;
             this.ApplicationManager = applicationManager;
             _dialogService = dialogService;
+        }
+
+        public bool IsProcessing
+        {
+            get
+            {
+                return this.isProcessing;
+            }
+            set
+            {
+                this.SetProperty(ref this.isProcessing, value);
+            }
         }
 
         public virtual void Initialize(INavigationParameters parameters)

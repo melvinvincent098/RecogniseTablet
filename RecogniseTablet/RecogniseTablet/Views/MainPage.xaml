@@ -21,6 +21,11 @@
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"
                         FontSize="Large"/>
+                <Image 
+                   HorizontalOptions="CenterAndExpand" 
+                   Margin="0,0,0,0"
+                   WidthRequest="250"
+                   Source="ProfileIcon.png"/>
 
                 <Label Text="It Looks Like You Haven't Registered Your Face." 
                         HorizontalOptions="Center"
@@ -42,7 +47,7 @@
                         Command="{Binding DoAddFaceCommand}"/>
 
             </StackLayout>
-
+            <ActivityIndicator  Scale="0.3" IsRunning="{Binding IsProcessing}" />
         </Grid>
     </ContentPage.Content>
 
