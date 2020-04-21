@@ -30,6 +30,7 @@ namespace RecogniseTablet.ViewModels
         private string _personGroupID, _username, _name;
         public AddFacePageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
+            Title = "Register Face";
             _cameraService = cameraService;
             _dialogService = dialogService;
             ActivityIndicator activityIndicator = new ActivityIndicator();

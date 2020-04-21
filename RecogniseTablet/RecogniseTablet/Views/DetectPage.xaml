@@ -4,7 +4,7 @@
 			 xmlns:local="clr-namespace:RecogniseTablet.CameraOption;assembly=RecogniseTablet"
 			 x:Class="RecogniseTablet.Views.DetectPage"
 			 Padding="0,20,0,0"
-			 Title="Main Page">
+			 Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout>
             <Label  Text="Camera Preview:" />

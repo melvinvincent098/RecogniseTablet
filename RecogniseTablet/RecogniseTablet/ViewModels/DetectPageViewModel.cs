@@ -22,6 +22,7 @@ namespace RecogniseTablet.ViewModels
         public static Timer aTimer;
         public DetectPageViewModel(INavigationService navigationService, IApplicationManager applicationManager, ICameraService cameraService, IPageDialogService dialogService) : base(navigationService, applicationManager, dialogService)
         {
+            Title = "Detect Face";
             _cameraService = cameraService;
             _dialogService = dialogService;
             ActivityIndicator activityIndicator = new ActivityIndicator();
