@@ -46,7 +46,10 @@ namespace RecogniseTablet.ViewModels
         {
 
         }
-
+        /// <summary>
+        /// Button on main screen to add a face
+        /// </summary>
+        /// <returns></returns>
         public async Task DoAddFaceCommandMethod()
         {
             var navigationParams = new NavigationParameters();

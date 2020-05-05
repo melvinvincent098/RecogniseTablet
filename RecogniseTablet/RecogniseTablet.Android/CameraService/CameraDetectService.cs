@@ -25,7 +25,7 @@ namespace RecogniseTablet.Droid.CameraService
         public event EventHandler<CameraFaceReceivedEventArgs> OnFaceDetect;
         public void ReceiveCameraFace(byte[] data)
         {
-            MessagingCenter.Send<ICameraService, byte[]>(this, "FaceData", data);
+            MessagingCenter.Send<ICameraService, byte[]>(this, "FaceData", data);                       //Create a an to can be subscribed to and name the event FaceData
         }
 
         public void Dispose()

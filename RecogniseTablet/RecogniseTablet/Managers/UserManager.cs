@@ -11,12 +11,18 @@ namespace RecogniseTablet.Managers
 {
     public class UserManager:IUserManager
     {
+        /// <summary>
+        /// Calls backend API to check user and check password
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public async Task<UserModel> CheckUser(string username, string password)
         {
-            string url = $"User/GetUserByUsername/{username}";
+            string url = $"User/GetUserByUsername/{username}";                                                              //URI to call backend API
             try
             {
-                using (HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url))
+                using (HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url))                          //calls the backend and wait for a response
                 {
                     UserModel user = new UserModel();
 
@@ -25,7 +31,7 @@ namespace RecogniseTablet.Managers
                         user = await response.Content.ReadAsAsync<UserModel>();
                         if (user.Password == password)                                                                           //Check if the password matches
                         {
-                            return user;
+                            return user;                                                        
                         }
                         else
                         {
@@ -46,10 +52,15 @@ namespace RecogniseTablet.Managers
 
         }
 
+        /// <summary>
+        /// Checks if face is registered
+        /// </summary>
+        /// <param name="UserID"></param>
+        /// <returns></returns>
         public async Task<int> CheckUserIDPersonGroupID(int UserID)
         {
-            string url = $"User/UserIDPersonGroupID/{UserID}";
-            int personGroupID = 0;
+            string url = $"User/UserIDPersonGroupID/{UserID}";                                                              //URI backend API
+            int personGroupID = 0;                                                                                          //0 which means no face is registered
             try
             {
                 HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url);
@@ -76,15 +87,22 @@ namespace RecogniseTablet.Managers
 
         }
 
+
+        /// <summary>
+        /// Insert persongroupid in db by calling backend
+        /// </summary>
+        /// <param name="UserID"></param>
+        /// <param name="PersonGroupID"></param>
+        /// <returns></returns>
         public async Task InsertUserIDPersonGroupID(int UserID, int PersonGroupID)
         {
             
 
             try
             {
-                string url = $"User/UserIDPersonGroupID/{UserID}/{PersonGroupID}";
+                string url = $"User/UserIDPersonGroupID/{UserID}/{PersonGroupID}";                                                      //URI to call backend
 
-                HttpResponseMessage response = await APIHelper.ApiClient.PostAsync(url, null);
+                HttpResponseMessage response = await APIHelper.ApiClient.PostAsync(url, null);                                          //does post to backend api
 
             }
             catch (Exception err)

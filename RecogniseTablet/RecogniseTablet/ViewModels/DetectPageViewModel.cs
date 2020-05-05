@@ -28,6 +28,10 @@ namespace RecogniseTablet.ViewModels
             ActivityIndicator activityIndicator = new ActivityIndicator();
         }
 
+        /// <summary>
+        /// Hits the OnNavigateTo function when page loads
+        /// </summary>
+        /// <param name="parameters"></param>
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             PersonGroupID = parameters.GetValue<int>("personGroupID");
@@ -35,33 +39,40 @@ namespace RecogniseTablet.ViewModels
             IsProcessing = false;
         }
 
-
+        /// <summary>
+        /// Subscribed event when face is detected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="data"></param>
         public async void CameraManager_CameraScan(object sender, byte[] data)
         {
-            IsProcessing = true;
-            var result = await this.ApplicationManager.FaceManager.IdentifyFace(data, PersonGroupID.ToString());
+            IsProcessing = true;                                                                                                    //Loading spinner shows
+            var result = await this.ApplicationManager.FaceManager.IdentifyFace(data, PersonGroupID.ToString());                    //calls the face manager to identify face
 
-            if (!result)
+            if (!result)                                                                                                            //unknown user found
             {
-                await this.ApplicationManager.NotificationManager.SendNotification();               //Sends alert to other device
-                await this.ApplicationManager.LocationManager.GetLocation(UserId);
-                SetupLocationTimer();
-                aTimer.Elapsed += GetLocationRepeat;
-                IsProcessing = false;
+                await this.ApplicationManager.NotificationManager.SendNotification();                                               //Sends alert to other device
+                await this.ApplicationManager.LocationManager.GetLocation(UserId);                                                  //Gets location of tablet as it is unknown user
+                SetupLocationTimer();                                                                                               //sets a timer up so it updates every min
+                aTimer.Elapsed += GetLocationRepeat;                                                                                //subscribe to timer event so when time runs out, it calls GetLocationRequest
+                IsProcessing = false;                                                                                               //Hides loading spinner
             }
-            else
+            else                                                                                                                    //User is the found and matches registered face
             {
-                IsProcessing = false;
+                IsProcessing = false;                                                                                               //hides loading spinner
                 await this._dialogService.DisplayAlertAsync("Hello", "Everything is ok, your are the registered driver!", "Ok");
             }
 
             
         }
 
+        /// <summary>
+        /// Timer setup
+        /// </summary>
         public void SetupLocationTimer()
         {
             aTimer = new Timer();
-            aTimer.Interval = 60000;
+            aTimer.Interval = 60000;                                                                                                //Sets timer to 1 min (60000 millisecond)
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
         }
@@ -73,23 +84,23 @@ namespace RecogniseTablet.ViewModels
 
         public void OnAppearing()
         {
-            MessagingCenter.Subscribe<ICameraService, byte[]>(this, "FaceData", async (sender, arg) =>
+            MessagingCenter.Subscribe<ICameraService, byte[]>(this, "FaceData", async (sender, arg) =>                          //Subscribe to camera face detect event
             {
-                this.ApplicationManager.CameraManager.OnCameraFaceDetect(arg);
+                this.ApplicationManager.CameraManager.OnCameraFaceDetect(arg);                                                  //when the event is trigger, OnCameraDetect event is triggered
             });
 
                        
-            this.ApplicationManager.CameraManager.CameraFaceDetect += CameraManager_CameraScan;
+            this.ApplicationManager.CameraManager.CameraFaceDetect += CameraManager_CameraScan;                                 //Subscribing to CameraFaceDetect event
         }
 
 
 
         public void OnDisappearing()
         {
-            MessagingCenter.Unsubscribe<ICameraService, byte[]>(this, "FaceData");
+            MessagingCenter.Unsubscribe<ICameraService, byte[]>(this, "FaceData");                                          //Unsubscribe from evenrt
 
             this.ApplicationManager.CameraManager.CameraFaceDetect -= CameraManager_CameraScan;
-            aTimer.Elapsed -= GetLocationRepeat;
+            aTimer.Elapsed -= GetLocationRepeat;                                                                            //unsubscribe from timer
         }
 
 

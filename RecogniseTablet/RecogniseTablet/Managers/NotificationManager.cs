@@ -10,19 +10,22 @@ namespace RecogniseTablet.Managers
 {
     public class NotificationManager:INotificationManager
     {
-
+        /// <summary>
+        /// Sends notification
+        /// </summary>
+        /// <returns></returns>
         public async Task SendNotification()
         {
-            string url = $"Notification/SendMessage";
+            string url = $"Notification/SendMessage";                                       //URI to backend API
 
             try
             {
-                HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url);
+                HttpResponseMessage response = await APIHelper.ApiClient.GetAsync(url);     //Calls the backend API to send notification
 
             }
             catch (Exception err)
             {
-
+                                                                                            //Notification didnt send
             }
 
         }

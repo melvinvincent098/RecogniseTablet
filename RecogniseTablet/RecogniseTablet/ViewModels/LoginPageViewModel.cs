@@ -24,26 +24,30 @@ namespace RecogniseTablet.ViewModels
             this.DoLoginCommand = new DelegateCommand<string>(async login => await this.LoginCommandMethod());
         }
 
+        /// <summary>
+        /// Login button method
+        /// </summary>
+        /// <returns></returns>
         public async Task LoginCommandMethod()
         {           
-            if(string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(Password))
-             {
+            if(string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(Password))                                      //checks if any fields were left empty
+            {
                 await this._dialogService.DisplayAlertAsync("Empty Fields", "Please fill in all the boxes", "Ok");
             }
             else
             {
-                IsProcessing = true;
-                var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);
+                IsProcessing = true;                                                                                            //Show loading spinner
+                var result = await this.ApplicationManager.UserManager.CheckUser(userName, Password);                           //calls check user in UserManager and gets back a user model
 
-                if (result != null)
+                if (result != null)                                                                                             //No user has not been found                                                              
                 {
-                    if (result.ID > 0)
+                    if (result.ID > 0)                                                                                          //if user exists, id should be > 0
                     {
-                        var personGroupID = await this.ApplicationManager.UserManager.CheckUserIDPersonGroupID(result.ID);
+                        var personGroupID = await this.ApplicationManager.UserManager.CheckUserIDPersonGroupID(result.ID);      //checks if the user has a registered face
                         var navigationParams = new NavigationParameters();
 
 
-                        if (personGroupID > 0)
+                        if (personGroupID > 0)                                                                                  //persongroupID should be greater than 0 if user has a registered face
                         {
                             navigationParams.Add("personGroupID", personGroupID);
                             navigationParams.Add("userId", result.ID);
@@ -57,7 +61,7 @@ namespace RecogniseTablet.ViewModels
 
                     }
                 }
-                else
+                else                                                                                                            //username or password is incorrect
                 {
                     IsProcessing = false;
                     await this._dialogService.DisplayAlertAsync("Incorrect Details", "Username or Password is Incorrect", "Ok");
